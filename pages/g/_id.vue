@@ -18,7 +18,7 @@
       </v-card>
       <div v-else>
         <br />
-        <v-card v-if="gameStatus == 'pre'">
+        <v-card v-if="gameStatusC == 'pre'">
           <v-card-title>
             Stadt Land Fluss - Pre-Game
           </v-card-title>
@@ -26,6 +26,13 @@
             <v-progress-circular indeterminate color="yellow darken-3" size="124">Connecting...</v-progress-circular>
           </v-card-text>
           <v-card-text v-else>
+            <v-row>
+              <v-col>
+                <v-alert type="warning" color="orange" border="left" icon="mdi-alert-circle-outline" dense transition="fade-transition" :value="gameRunning">
+                  <span class="font-weight-bold mr-1">Spiel am laufen</span>Es findet gerade ein Spiel statt. Du bist in der nächsten Runde dabei.
+                </v-alert>
+              </v-col>
+            </v-row>
             <v-row>
               <v-col cols="6" sm="12" md="6">
                 <v-list dense>
@@ -83,7 +90,7 @@
             <v-btn color="green" block large :disabled="!isOwner" @click="startGame"><v-icon>mdi-play</v-icon>&ensp;Spiel starten</v-btn>
           </v-card-actions>
         </v-card>
-        <v-card v-if="gameStatus == 'timer'">
+        <v-card v-if="gameStatusC == 'timer'">
           <v-card-title>
             Stadt Land Fluss
           </v-card-title>
@@ -94,13 +101,13 @@
             </div>
           </v-card-text>
         </v-card>
-        <v-card :loading="finish ? 'red' : 'false'" v-if="gameStatus == 'think'">
+        <v-card :loading="finish ? 'red' : 'false'" v-show="gameStatusC == 'think'">
           <v-card-title>
             Stadt Land Fluss - Überlegen
           </v-card-title>
           <v-card-text>
             <v-avatar v-for="(user, i) in users.filter(user => {return user.room == $route.params.id})" :key="i" color="primary" size="36" class="noselect uppercase avatar mr-1 mb-10">{{ user.username.substring(0,3) }}</v-avatar>
-            <h2>Buchstabe: <span class="text-uppercase">{{letter}}</span></h2>
+            <h2 class="mb-4">Buchstabe: <span class="text-uppercase">{{letter}}</span></h2>
             <v-form ref="thinkform" @submit.prevent="sendAnswers">
               <v-text-field :label="field" v-for="(field, i) in categories" :key="i" :disabled="submitted"></v-text-field>
               <v-btn color="primary" @click="submitAnswers" :disabled="submitted" block x-large>Fertig</v-btn>
@@ -110,7 +117,7 @@
             </div>
           </v-card-text>
         </v-card>
-        <v-card v-if="gameStatus == 'evaluation'">
+        <v-card v-if="gameStatusC == 'evaluation'">
           <v-card-title>
             Stadt Land Fluss - Auswertung
           </v-card-title>
@@ -136,7 +143,7 @@
                       </td>
                       <td v-for="(res, j) in item.answers" :key="j">
                         <v-checkbox color="green" :disabled="res == null" :value="false" @change="changeEvaluation(j + categories.length * i)">
-                          <template v-slot:prepend><p class="mt-1">{{res}}</p></template>
+                          <template v-slot:prepend><p class="mt-1 text-no-wrap">{{res}}</p></template>
                           <template v-slot:label>{{eval_tab[j + categories.length * i]}}</template>
                         </v-checkbox>
                       </td>
@@ -162,12 +169,12 @@ import Vue from 'vue';
 
 export default {
   head: {
-    title: 'Spiel'
+    title: 'Stadt Land Fluss'
   },
 
   data:() => ({
     username: '',
-    socket: io('https://api.mc-mineserver.de/slf'),
+    socket: io('http://192.168.178.72:7999/slf'),
     users: [],
     categories: ['Stadt', 'Land', 'Fluss'],
     isOwner: false,
@@ -181,18 +188,36 @@ export default {
     player_res: [],
     eval_tab: [],
     form_length: '',
+    isMounted: false,
+    gameRunning: false,
+    inGame: false,
   }),
 
   mounted() {
     this.connectToSocket()
     this.loginAlready()
     this.listen()
-    this.$refs.loginfield.focus()
+    try {
+      this.$refs.loginfield.focus()
+    } catch(err) {
+      console.error(err)
+    }
+    this.isMounted = true
   },
 
   beforeDestroy() {
     this.disconnectFromSocket()
     console.log('[%cDEBUG%c] disconnected', 'color:#eb0;', 'color:#000')
+  },
+
+  computed: {
+    gameStatusC() {
+      if(this.inGame) {
+        return this.gameStatus
+      } else {
+        return 'pre'
+      }
+    }
   },
 
   methods: {
@@ -219,6 +244,7 @@ export default {
       this.socket.on('sync', () => {
         if(this.isOwner) {
           this.syncCategories()
+          this.socket.emit('phase', this.gameStatus)
         }
       })
       this.socket.on('exit', () => {
@@ -231,34 +257,36 @@ export default {
       })
       this.socket.on('game', (status) => {
         this.gameStatus = status
-        this.finish = false
-        this.submitted = false
         if(status == 'timer') {
           this.countdownTimer()
           if(this.isOwner) {
             this.randomLetter()
           }
         }
-        if(status == 'think') {
+        if(status == 'think' && this.inGame == true) {
           this.results = []
           this.player_res = []
         }
-        if(status == 'evaluation') {
+        if(status == 'evaluation' && this.inGame == true) {
           this.eval_tab = []
           setTimeout(() => {
             this.form_length = this.$refs.evalform.inputs.length
             this.startEvaluation()
           }, 40)
         }
+        if(status == 'pre') {
+          this.finish = false
+          this.submitted = false
+        }
       })
       this.socket.on('finish', () => {
         this.finish = true
         this.countdownTimer()
         setTimeout(() => {
-          if(!this.submitted) {
+          if(!this.submitted && this.inGame == true) {
             this.submitAnswers()
           }
-        }, 5980)
+        }, 6000)
       })
       this.socket.on('answers', (ans) => {
         this.player_res.push(ans)
@@ -273,6 +301,12 @@ export default {
           var val = this.eval_tab[id.id] + 1
         }
         Vue.set(this.eval_tab, id.id, val)
+      })
+      this.socket.on('inGame', (tf) => {
+        this.inGame = tf
+      })
+      this.socket.on('running', (tf) => {
+        this.gameRunning = tf
       })
     },
 

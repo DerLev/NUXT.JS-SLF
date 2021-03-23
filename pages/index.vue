@@ -17,7 +17,7 @@
 <script>
 export default {
   head: {
-    title: 'Home'
+    title: 'Home – Stadt Land Fluss'
   },
 
   methods: {

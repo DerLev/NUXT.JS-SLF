@@ -8,7 +8,7 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s – Stadt Land Fluss – McMineserver',
+    titleTemplate: '%s – McMineserver',
     title: 'PAGE',
     htmlAttrs: {
       lang: 'en'
