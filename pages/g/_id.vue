@@ -139,7 +139,7 @@
                   <tbody>
                     <tr v-for="(item, i) in player_res" :key="i">
                       <td>
-                        {{ item.username }}
+                        {{ item.username }}<span class="ml-1 grey--text font-italic font-weight-light" v-if="item.id == socket.id">Du</span>
                       </td>
                       <td v-for="(res, j) in item.answers" :key="j">
                         <v-checkbox color="green" :disabled="res == null" :value="false" @change="changeEvaluation(j + categories.length * i)">
