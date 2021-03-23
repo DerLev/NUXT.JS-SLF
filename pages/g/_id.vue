@@ -28,8 +28,8 @@
           <v-card-text v-else>
             <v-row>
               <v-col>
-                <v-alert type="warning" color="orange" border="left" icon="mdi-alert-circle-outline" dense transition="fade-transition" :value="gameRunning">
-                  <span class="font-weight-bold mr-1">Spiel am laufen</span>Es findet gerade ein Spiel statt. Du bist in der nächsten Runde dabei.
+                <v-alert type="warning" color="orange" border="left" icon="mdi-alert-circle-outline" transition="fade-transition" :value="gameRunning && !inGame">
+                  Es findet gerade ein Spiel statt. Du bist in der nächsten Runde dabei.
                 </v-alert>
               </v-col>
             </v-row>
