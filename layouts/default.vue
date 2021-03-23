@@ -38,7 +38,7 @@ export default {
 
   mounted() {
     this.$store.commit('CHANGE_NAME', this.$cookie.get('username'))
-    console.log(this.$cookie.get('username'))
+    console.log('[%cCOOKIE%c] read username from cookie: ' + this.$cookie.get('username'), 'color:#eb0;', 'color:#000')
   },
 
   methods: {
@@ -46,6 +46,7 @@ export default {
       this.$router.push('/')
       this.$cookie.remove('username', {})
       this.$store.commit('CHANGE_NAME', undefined)
+      console.log('[%cCOOKIE%c] remove username cookie', 'color:#eb0;', 'color:#000')
     }
   }
 }

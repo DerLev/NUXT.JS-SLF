@@ -316,6 +316,7 @@ export default {
         sameSite: true,
         maxAge: 60 * 60 * 24 * 365,
       })
+      console.log('[%cCOOKIE%c] set username cookie to ' + this.username, 'color:#eb0;', 'color:#000')
       this.socket.emit('login', {username: this.$store.state.name, room: this.$route.params.id})
     },
 
