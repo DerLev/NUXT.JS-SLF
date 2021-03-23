@@ -36,10 +36,16 @@ export default {
     }
   },
 
+  mounted() {
+    this.$store.commit('CHANGE_NAME', this.$cookie.get('username'))
+    console.log(this.$cookie.get('username'))
+  },
+
   methods: {
     logout() {
       this.$router.push('/')
-      this.$store.commit('CHANGE_NAME', '')
+      this.$cookie.remove('username', {})
+      this.$store.commit('CHANGE_NAME', undefined)
     }
   }
 }

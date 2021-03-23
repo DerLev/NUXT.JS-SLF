@@ -311,7 +311,11 @@ export default {
     },
 
     login() {
-      this.$store.commit('CHANGE_NAME',this.username)
+      this.$store.commit('CHANGE_NAME', this.username)
+      this.$cookie.set('username', this.username, {
+        sameSite: true,
+        maxAge: 60 * 60 * 24 * 365,
+      })
       this.socket.emit('login', {username: this.$store.state.name, room: this.$route.params.id})
     },
 

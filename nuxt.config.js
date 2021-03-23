@@ -46,6 +46,7 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     'nuxt-clipboard2',
+    ['cookie-universal-nuxt', {alias: 'cookie'}],
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
