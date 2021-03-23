@@ -174,7 +174,7 @@ export default {
 
   data:() => ({
     username: '',
-    socket: io('http://192.168.178.72:7999/slf'),
+    socket: io('https://api.mc-mineserver.de/slf'),
     users: [],
     categories: ['Stadt', 'Land', 'Fluss'],
     isOwner: false,
