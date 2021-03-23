@@ -52,7 +52,7 @@
                         </v-tooltip>
                       </v-list-item-action>
                       <v-list-item-title>
-                        {{ user.username }}<span v-if="user.owner" class="ml-2"><v-icon color="yellow darken-3" size="18">mdi-crown</v-icon></span>
+                        {{ user.username }}<span v-if="user.owner" class="ml-2"><v-icon color="yellow darken-3" size="18">mdi-crown</v-icon></span><span class="ml-1 grey--text font-italic font-weight-light" v-if="user.id == socket.id">Du</span>
                       </v-list-item-title>
                       <v-list-item-action v-if="isOwner">
                         <v-btn color="red" icon @click="kickUser(user.id)" :disabled="user.id == socket.id"><v-icon>mdi-account-remove</v-icon></v-btn>
