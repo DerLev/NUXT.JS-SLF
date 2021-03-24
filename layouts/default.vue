@@ -38,15 +38,18 @@ export default {
 
   mounted() {
     this.$store.commit('CHANGE_NAME', this.$cookie.get('username'))
-    console.log('[%cCOOKIE%c] read username from cookie: ' + this.$cookie.get('username'), 'color:#eb0;', 'color:#000')
+    console.log('[%cCOOKIE%c] read username from cookie: ' + this.$cookie.get('username'), 'color:#e50;', 'color:#000')
   },
 
   methods: {
     logout() {
       this.$router.push('/')
-      this.$cookie.remove('username', {})
+      this.$cookie.remove('username', {
+        sameSite: true,
+        maxAge: 60 * 60 * 24 * 365,
+      })
       this.$store.commit('CHANGE_NAME', undefined)
-      console.log('[%cCOOKIE%c] remove username cookie', 'color:#eb0;', 'color:#000')
+      console.log('[%cCOOKIE%c] remove username cookie', 'color:#e50;', 'color:#000')
     }
   }
 }

@@ -1,8 +1,8 @@
 <template>
   <v-row justify="center" align="center">
     <v-col cols="12" sm="12" md="12">
-      <v-btn color="green" v-if="this.$store.state.name" @click="copyInvite" :disabled="!isOwner" class="mr-5"><v-icon>mdi-share</v-icon>&ensp;Invite</v-btn>
-      <v-btn color="red" v-if="this.$store.state.name" @click="leave('Du hast das Spiel verlassen')"><v-icon>mdi-logout</v-icon>&ensp;Verlassen</v-btn>
+      <v-btn color="red" v-if="this.$store.state.name" @click="leave('Du hast das Spiel verlassen')" icon large><v-icon>mdi-exit-to-app</v-icon></v-btn>
+      <v-btn color="green" v-if="this.$store.state.name && isOwner" @click="copyInvite" :disabled="!isOwner" class="ml-5"><v-icon>mdi-share</v-icon>&ensp;Invite</v-btn>
       <v-card v-if="!this.$store.state.name">
         <v-card-title>
           Stadt Land Fluss
@@ -87,7 +87,8 @@
             </v-row>
           </v-card-text>
           <v-card-actions v-if="users.filter(user => {return user.room == $route.params.id}).length > 0">
-            <v-btn color="green" block large :disabled="!isOwner" @click="startGame"><v-icon>mdi-play</v-icon>&ensp;Spiel starten</v-btn>
+            <v-btn v-if="isOwner" color="green" block large @click="startGame" :loading="isPending"><v-icon>mdi-play</v-icon>&ensp;Spiel starten</v-btn>
+            <v-btn v-else color="green" block large disabled><v-icon>mdi-play</v-icon>&ensp;Der Owner muss das Spiel starten</v-btn>
           </v-card-actions>
         </v-card>
         <v-card v-if="gameStatusC == 'timer'">
@@ -134,6 +135,9 @@
                       <th v-for="(head, i) in categories" :key="i">
                         {{ head }}
                       </th>
+                      <th class="text-center">
+                        Punkte
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -147,14 +151,18 @@
                           <template v-slot:label>{{eval_tab[j + categories.length * i]}}</template>
                         </v-checkbox>
                       </td>
+                      <td class="body-1 grey--text text-center">
+                        {{ points[i] }}
+                      </td>
                     </tr>
                   </tbody>
                 </template>
               </v-simple-table>
             </v-form>
           </v-card-text>
-          <v-card-actions v-if="isOwner">
-            <v-btn color="primary" block large @click="reset"><v-icon>mdi-arrow-left</v-icon>&ensp;Zurück zur Lobby</v-btn>
+          <v-card-actions>
+            <v-btn v-if="isOwner" color="primary" block large @click="reset" :loading="isPending"><v-icon>mdi-arrow-left</v-icon>&ensp;Zurück zur Lobby</v-btn>
+            <v-btn v-else color="primary" block large disabled><v-icon>mdi-arrow-left</v-icon>&ensp;Der Owner muss zurück zur Lobby</v-btn>
           </v-card-actions>
         </v-card>
       </div>
@@ -191,6 +199,7 @@ export default {
     isMounted: false,
     gameRunning: false,
     inGame: false,
+    isPending: false,
   }),
 
   mounted() {
@@ -216,6 +225,22 @@ export default {
         return this.gameStatus
       } else {
         return 'pre'
+      }
+    },
+
+    points() {
+      if(this.isMounted == true) {
+        var i
+        var arr = []
+        for(i = 0; i < this.player_res.length; i++) {
+          var points = 0
+          var j
+          for(j = 0; j < this.categories.length; j++) {
+            points += this.eval_tab[i * this.categories.length + j]
+          }
+          arr.push(points)
+        }
+        return arr
       }
     }
   },
@@ -257,6 +282,7 @@ export default {
       })
       this.socket.on('game', (status) => {
         this.gameStatus = status
+        this.isPending = false
         if(status == 'timer') {
           this.countdownTimer()
           if(this.isOwner) {
@@ -316,7 +342,7 @@ export default {
         sameSite: true,
         maxAge: 60 * 60 * 24 * 365,
       })
-      console.log('[%cCOOKIE%c] set username cookie to ' + this.username, 'color:#eb0;', 'color:#000')
+      console.log('[%cCOOKIE%c] set username cookie to ' + this.username, 'color:#e50;', 'color:#000')
       this.socket.emit('login', {username: this.$store.state.name, room: this.$route.params.id})
     },
 
@@ -363,6 +389,7 @@ export default {
 
     startGame() {
       this.socket.emit('start')
+      this.isPending = true
     },
 
     countdownTimer() {
@@ -416,7 +443,8 @@ export default {
 
     reset() {
       this.socket.emit('reset')
-    }
+      this.isPending = true
+    },
   },
 }
 </script>
