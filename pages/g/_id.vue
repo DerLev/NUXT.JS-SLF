@@ -83,11 +83,6 @@
                 <v-form @submit.prevent="addCategory" ref="categoriesForm" v-if="isOwner">
                   <v-text-field label="Kategorie hinzufügen" append-outer-icon="mdi-plus" @click:append-outer="addCategory" ref="addCategory"></v-text-field>
                 </v-form>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col></v-col>
-              <v-col cols="6" sm="12" md="6">
                 <v-form>
                   <v-subheader>Die Denkphase wird beendet</v-subheader>
                   <v-radio-group row v-model="behavior" :disabled="!isOwner">
