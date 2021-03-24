@@ -85,6 +85,20 @@
                 </v-form>
               </v-col>
             </v-row>
+            <v-row>
+              <v-col></v-col>
+              <v-col cols="6" sm="12" md="6">
+                <v-form>
+                  <v-subheader>Die Denkphase wird beendet</v-subheader>
+                  <v-radio-group row v-model="behavior" :disabled="!isOwner">
+                    <v-radio label="Wenn jemand auf Fertig drückt" value="ready" @click="gameEnd"></v-radio>
+                    <v-radio label="Wenn der Countdown endet" value="countdown" @click="gameEnd"></v-radio>
+                  </v-radio-group>
+                  <v-subheader>Countdown in Sekunden</v-subheader>
+                  <v-slider step="10" min="30" max="300" thumb-label prepend-icon="mdi-clock-outline" v-model="countdown_slider" :disabled="behavior != 'countdown' || !isOwner" @end="gameEnd" :hint="countdown_slider + 's'" :persistent-hint="behavior == 'countdown'"></v-slider>
+                </v-form>
+              </v-col>
+            </v-row>
           </v-card-text>
           <v-card-actions v-if="users.filter(user => {return user.room == $route.params.id}).length > 0">
             <v-btn v-if="isOwner" color="green" block large @click="startGame" :loading="isPending"><v-icon>mdi-play</v-icon>&ensp;Spiel starten</v-btn>
@@ -102,7 +116,7 @@
             </div>
           </v-card-text>
         </v-card>
-        <v-card :loading="finish ? 'red' : 'false'" v-show="gameStatusC == 'think'">
+        <v-card :loading="cdIndicator" v-show="gameStatusC == 'think'">
           <v-card-title>
             Stadt Land Fluss - Überlegen
           </v-card-title>
@@ -113,8 +127,8 @@
               <v-text-field :label="field" v-for="(field, i) in categories" :key="i" :disabled="submitted"></v-text-field>
               <v-btn color="primary" @click="submitAnswers" :disabled="submitted" block x-large>Fertig</v-btn>
             </v-form>
-            <div v-if="finish" class="text-center mt-5">
-              <v-progress-circular color="red" :value="countdown_pg" rotate="270" size="124">{{ countdown }}</v-progress-circular>
+            <div v-if="finish || behavior == 'countdown'" class="text-center mt-5">
+              <v-progress-circular :color="countdown <= 5 ? 'red' : 'primary'" :value="countdown_pg" rotate="270" size="124">{{ countdown }}</v-progress-circular>
             </div>
           </v-card-text>
         </v-card>
@@ -200,6 +214,8 @@ export default {
     gameRunning: false,
     inGame: false,
     isPending: false,
+    behavior: 'ready',
+    countdown_slider: 120,
   }),
 
   mounted() {
@@ -242,7 +258,17 @@ export default {
         }
         return arr
       }
-    }
+    },
+
+    cdIndicator() {
+      if(this.behavior == 'countdown' && this.countdown <= 5) {
+        return 'red'
+      } else if(this.finish == true) {
+        return 'red'
+      } else {
+        return false
+      }
+    },
   },
 
   methods: {
@@ -270,6 +296,7 @@ export default {
         if(this.isOwner) {
           this.syncCategories()
           this.socket.emit('phase', this.gameStatus)
+          this.gameEnd()
         }
       })
       this.socket.on('exit', () => {
@@ -284,6 +311,8 @@ export default {
         this.gameStatus = status
         this.isPending = false
         if(status == 'timer') {
+          this.countdown = 5
+          this.countdown_pg = 100
           this.countdownTimer()
           if(this.isOwner) {
             this.randomLetter()
@@ -292,6 +321,9 @@ export default {
         if(status == 'think' && this.inGame == true) {
           this.results = []
           this.player_res = []
+          if(this.behavior == 'countdown') {
+            this.startGameCountdown()
+          }
         }
         if(status == 'evaluation' && this.inGame == true) {
           this.eval_tab = []
@@ -306,6 +338,8 @@ export default {
         }
       })
       this.socket.on('finish', () => {
+        this.countdown = 5
+        this.countdown_pg = 100
         this.finish = true
         this.countdownTimer()
         setTimeout(() => {
@@ -333,6 +367,13 @@ export default {
       })
       this.socket.on('running', (tf) => {
         this.gameRunning = tf
+      })
+      this.socket.on('csync', (state, ctdwn) => {
+        this.behavior = state
+        this.countdown_slider = ctdwn
+      })
+      this.socket.on('submitanswers', () => {
+        this.submitAnswers()
       })
     },
 
@@ -388,20 +429,43 @@ export default {
     },
 
     startGame() {
-      this.socket.emit('start')
+      if(this.behavior == 'countdown') {
+        this.socket.emit('start', this.countdown_slider)
+      } else {
+        this.socket.emit('start')
+      }
       this.isPending = true
     },
 
     countdownTimer() {
-      if(this.countdown > -1) {
+      if(this.countdown > 0) {
         setTimeout(() => {
           this.countdown -= 1
           this.countdown_pg = this.countdown * 20
           this.countdownTimer()
         }, 1000)
       } else {
-        this.countdown = 5
-        this.countdown_pg = this.countdown * 20
+        this.countdown = 0
+        this.countdown_pg = 0
+      }
+    },
+
+    startGameCountdown() {
+      this.countdown = this.countdown_slider
+      this.countdown_pg = this.countdown / this.countdown_slider * 100
+      this.countdownGame()
+    },
+
+    countdownGame() {
+      if(this.countdown > 0) {
+        setTimeout(() => {
+          this.countdown -= 1
+          this.countdown_pg = this.countdown / this.countdown_slider * 100
+          this.countdownGame()
+        }, 1000)
+      } else {
+        this.countdown = 0
+        this.countdown_pg = 0
       }
     },
 
@@ -414,7 +478,7 @@ export default {
         this.sendAnswers()
       }
       this.submitted = true
-      if(!this.finish) {
+      if(!this.finish && this.behavior == 'ready') {
         this.socket.emit('ready')
       }
     },
@@ -445,6 +509,10 @@ export default {
       this.socket.emit('reset')
       this.isPending = true
     },
+
+    gameEnd() {
+      this.socket.emit('csync', this.behavior, this.countdown_slider)
+    }
   },
 }
 </script>

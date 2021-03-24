@@ -9,7 +9,7 @@
           <h1 class="mb-5">Stadt Land Fluss</h1>
           <p>
             Hier können du und deine Freunde zusammen <span class="font-weight-bold">Stadt Land Fluss</span> spielen.<br class="mb-2" />
-            Ihr braucht einen Discord ??? Schau doch mal <a href="https://mc-mineserver.de/discord-server/" target="_blank" ref="noopener noreferrer">hier</a> vorbei.
+            Ihr braucht einen Discord ??? Schau doch mal <a href="https://mc-mineserver.de/discord-server/" target="_blank" ref="noopener noreferrer" class="grey--text">hier</a> vorbei.
           </p>
           <h1 class="mb-5">Features:</h1>
           <ul class="mb-3">

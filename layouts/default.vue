@@ -13,6 +13,8 @@
     </v-main>
     <v-footer :absolute="!fixed" app>
       <span>&copy; {{ new Date().getFullYear() }} McMineserver</span>
+      <v-spacer></v-spacer>
+      <span><v-btn small text href="https://github.com/DerLev/NUXT.JS-SLF" target="_blank" ref="noopener noreferrer"><v-icon>mdi-github</v-icon>&ensp;GitHub</v-btn></span>
     </v-footer>
   </v-app>
 </template>
