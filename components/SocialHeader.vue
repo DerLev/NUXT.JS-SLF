@@ -21,6 +21,12 @@ export default {
     }
   },
 
+  data() {
+    return {
+      path: this.$route.fullPath
+    }
+  },
+
   head() {
     return {
       meta: [
@@ -62,7 +68,7 @@ export default {
         {
           hid: 'og:url',
           property: 'og:url',
-          content: 'https://slf.mc-mineserver.de' + this.$route.fullRoute
+          content: 'https://slf.mc-mineserver.de' + this.path
         },
         {
           hid: 'og:title',
@@ -95,7 +101,7 @@ export default {
         {
           hid: 'canonical',
           rel: 'canonical',
-          href: 'https://slf.mc-mineserver.de' + this.$route.fullPath
+          href: 'https://slf.mc-mineserver.de' + this.path
         }
       ]
     }
