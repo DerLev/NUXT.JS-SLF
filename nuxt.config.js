@@ -46,6 +46,7 @@ export default {
     '@nuxtjs/axios',
     'nuxt-clipboard2',
     ['cookie-universal-nuxt', {alias: 'cookie'}],
+    '@nuxtjs/sitemap',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -67,6 +68,20 @@ export default {
           success: colors.green.accent3
         }
       }
+    }
+  },
+
+  sitemap: {
+    hostname: 'https://slf.mc-mineserver.de',
+    gzip: true,
+    trailingSlash: true,
+    exclude: [
+      '/g/*/',
+      '/j/*/',
+    ],
+    defaults: {
+      changefreq: 'monthly',
+      lastmod: new Date()
     }
   },
 
