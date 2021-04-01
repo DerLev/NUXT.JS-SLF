@@ -214,6 +214,8 @@ export default {
   }),
 
   mounted() {
+    this.$store.commit('CHANGE_TITLE', 'Stadt Land Fluss')
+    this.$store.commit('CHANGE_DESCRIPTION', 'Stadt Land Fluss')
     this.connectToSocket()
     this.loginAlready()
     this.listen()

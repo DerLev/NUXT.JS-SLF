@@ -41,6 +41,11 @@ export default {
     title: 'Home – Stadt Land Fluss'
   },
 
+  mounted() {
+    this.$store.commit('CHANGE_TITLE', 'Home – Stadt Land Fluss')
+    this.$store.commit('CHANGE_DESCRIPTION', 'Hier können du und deine Freunde zusammen Stadt Land Fluss spielen')
+  },
+
   methods: {
     startNew() {
       this.$router.push('/c/')

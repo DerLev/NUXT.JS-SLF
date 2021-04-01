@@ -22,7 +22,7 @@
 <script>
 export default {
   head: {
-    title: 'Einem Spiel Beitreten'
+    title: 'Einem Spiel beitreten'
   },
 
   data:() => ({
@@ -31,6 +31,8 @@ export default {
 
   mounted() {
     this.$refs.joinfield.focus()
+    this.$store.commit('CHANGE_TITLE', 'Einem Spiel beitreten')
+    this.$store.commit('CHANGE_DESCRIPTION', 'Trete deinen Freunden bei und spiele Stadt Land Fluss')
   },
 
   methods: {

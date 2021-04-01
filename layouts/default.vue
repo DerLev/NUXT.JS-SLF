@@ -21,7 +21,77 @@
 
 <script>
 export default {
-  data () {
+  head() {
+    return {
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.$store.state.description
+        },
+        {
+          hid: 'twitter:type',
+          name: 'twitter:type',
+          content: 'summary'
+        },
+        {
+          hid: 'twitter:title',
+          name: 'twitter:title',
+          content: this.$store.state.title
+        },
+        {
+          hid: 'twitter:description',
+          name: 'twitter:description',
+          content: this.$store.state.description
+        },
+        {
+          hid: 'twitter:image',
+          name: 'twitter:image',
+          content: this.$store.state.image
+        },
+        {
+          hid: 'og:site_name',
+          property: 'og:site_name',
+          content: 'McMineserver'
+        },
+        {
+          hid: 'og:url',
+          property: 'og:url',
+          content: 'https://slf.mc-mineserver.de' + this.$route.fullPath
+        },
+        {
+          hid: 'og:locale',
+          property: 'og:locale',
+          content: 'de_DE'
+        },
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.$store.state.title
+        },
+        {
+          hid: 'og:description',
+          property: 'og:description',
+          content: this.$store.state.description
+        },
+        {
+          hid: 'og:image',
+          property: 'og:image',
+          content: this.$store.state.image
+        },
+      ],
+
+      link: [
+        {
+          hid: 'canonical',
+          rel: 'canonical',
+          href: 'https://slf.mc-mineserver.de' + this.$route.fullPath
+        }
+      ]
+    }
+  },
+
+  data() {
     return {
       clipped: true,
       drawer: false,
