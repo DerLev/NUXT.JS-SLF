@@ -8,6 +8,7 @@
     <v-main>
       <v-container>
         <Snackbar />
+        <CookieConsent />
         <nuxt />
       </v-container>
     </v-main>
