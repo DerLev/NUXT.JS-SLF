@@ -1,5 +1,5 @@
 <template>
-  
+  <SocialHeader title="Ein Stadt Land Fluss Spiel erstellen" description="Erstelle ein Stadt Land Fluss Spiel" />
 </template>
 
 <script>
@@ -8,11 +8,6 @@ const rs = require('randomstring');
 export default {
   head: {
     title: 'Ein Stadt Land Fluss Spiel erstellen'
-  },
-
-  mounted() {
-    this.$store.commit('CHANGE_TITLE', 'Ein Stadt Land Fluss Spiel erstellen')
-    this.$store.commit('CHANGE_DESCRIPTION', 'Erstelle ein Stadt Land Fluss Spiel')
   },
 
   created() {

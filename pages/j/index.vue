@@ -1,22 +1,25 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="12" md="12">
-      <v-card>
-        <v-card-title>
-          Stadt Land Fluss
-        </v-card-title>
-        <v-card-text>
-          <p>Füge hier den Einladungslink ein</p>
-          <v-form @submit.prevent="join">
-            <v-text-field label="Game-URL" v-model="url" ref="joinfield"></v-text-field>
-          </v-form>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn color="primary" block large @click="join" :disabled="!url"><v-icon>mdi-link</v-icon>&ensp;Spiel beitreten</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-  </v-row>
+  <div>
+    <SocialHeader title="Einem Spiel beitreten" description="Trete deinen Freunden bei und spiele Stadt Land Fluss" />
+    <v-row justify="center" align="center">
+      <v-col cols="12" sm="12" md="12">
+        <v-card>
+          <v-card-title>
+            Stadt Land Fluss
+          </v-card-title>
+          <v-card-text>
+            <p>Füge hier den Einladungslink ein</p>
+            <v-form @submit.prevent="join">
+              <v-text-field label="Game-URL" v-model="url" ref="joinfield"></v-text-field>
+            </v-form>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn color="primary" block large @click="join" :disabled="!url"><v-icon>mdi-link</v-icon>&ensp;Spiel beitreten</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script>
@@ -31,8 +34,6 @@ export default {
 
   mounted() {
     this.$refs.joinfield.focus()
-    this.$store.commit('CHANGE_TITLE', 'Einem Spiel beitreten')
-    this.$store.commit('CHANGE_DESCRIPTION', 'Trete deinen Freunden bei und spiele Stadt Land Fluss')
   },
 
   methods: {

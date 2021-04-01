@@ -1,182 +1,185 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="12" md="12">
-      <v-btn color="red" v-if="this.$store.state.name" @click="leave('Du hast das Spiel verlassen')" icon large><v-icon>mdi-exit-to-app</v-icon></v-btn>
-      <v-btn color="green" v-if="this.$store.state.name && isOwner" @click="copyInvite" :disabled="!isOwner" class="ml-5"><v-icon>mdi-share</v-icon>&ensp;Invite</v-btn>
-      <v-card v-if="!this.$store.state.name">
-        <v-card-title>
-          Stadt Land Fluss
-        </v-card-title>
-        <v-card-text>
-          <v-form @submit.prevent="login">
-            <v-text-field label="Username" v-model="username" ref="loginfield"></v-text-field>
-          </v-form>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn color="green" block large @click="login" :disabled="!username"><v-icon>mdi-play</v-icon>&ensp;Spiel beitreten</v-btn>
-        </v-card-actions>
-      </v-card>
-      <div v-else>
-        <br />
-        <v-card v-if="gameStatusC == 'pre'">
-          <v-card-title>
-            Stadt Land Fluss - Pre-Game
-          </v-card-title>
-          <v-card-text v-if="!users.filter(user => {return user.room == $route.params.id}).length > 0" class="text-center">
-            <v-progress-circular indeterminate color="yellow darken-3" size="124">Connecting...</v-progress-circular>
-          </v-card-text>
-          <v-card-text v-else>
-            <v-row>
-              <v-col>
-                <v-alert type="warning" color="orange" border="left" icon="mdi-alert-circle-outline" transition="fade-transition" :value="gameRunning && !inGame">
-                  Es findet gerade ein Spiel statt. Du bist in der nächsten Runde dabei.
-                </v-alert>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="6" sm="12" md="6">
-                <v-list dense>
-                  <v-subheader>
-                    Users
-                  </v-subheader>
-                  <v-slide-y-transition group tag="div">
-                    <v-list-item v-for="(user, i) in users.filter(user => {return user.room == $route.params.id})" :key="i">
-                      <v-list-item-action>
-                        <v-tooltip bottom>
-                          <template v-slot:activator="{ on, attrs }">
-                            <div class="noselect uppercase avatar">
-                              <v-avatar color="primary" size="40" v-bind="attrs" v-on="on">{{ user.username.substring(0,3) }}</v-avatar>
-                            </div>
-                          </template>
-                          <span>{{ user.username }}</span>
-                        </v-tooltip>
-                      </v-list-item-action>
-                      <v-list-item-title>
-                        {{ user.username }}<span v-if="user.owner" class="ml-2"><v-icon color="yellow darken-3" size="18">mdi-crown</v-icon></span><span class="ml-1 grey--text font-italic font-weight-light" v-if="user.id == socket.id">Du</span>
-                      </v-list-item-title>
-                      <v-list-item-action v-if="isOwner">
-                        <v-btn color="red" icon @click="kickUser(user.id)" :disabled="user.id == socket.id"><v-icon>mdi-account-remove</v-icon></v-btn>
-                      </v-list-item-action>
-                    </v-list-item>
-                  </v-slide-y-transition>
-                </v-list>
-              </v-col>
-              <v-col cols="6" sm="12" md="6">
-                <v-list dense>
-                  <v-subheader>
-                    Kategorien
-                  </v-subheader>
-                  <v-slide-y-transition group tag="div">
-                    <v-list-item v-for="(item, i) in categories" :key="i">
-                      <v-list-item-action>
-                        <v-avatar color="primary" size="32" class="noselect uppercase avatar">#{{i + 1}}</v-avatar>
-                      </v-list-item-action>
-                      <v-list-item-title>
-                        {{item}}
-                      </v-list-item-title>
-                      <v-list-item-action v-if="isOwner">
-                        <v-btn color="red" icon @click="deleteCategory(i)"><v-icon>mdi-delete</v-icon></v-btn>
-                      </v-list-item-action>
-                    </v-list-item>
-                  </v-slide-y-transition>
-                </v-list>
-                <v-form @submit.prevent="addCategory" ref="categoriesForm" v-if="isOwner">
-                  <v-text-field label="Kategorie hinzufügen" append-outer-icon="mdi-plus" @click:append-outer="addCategory" ref="addCategory"></v-text-field>
-                </v-form>
-                <v-form>
-                  <v-subheader>Die Denkphase wird beendet</v-subheader>
-                  <v-radio-group row v-model="behavior" :disabled="!isOwner">
-                    <v-radio label="Wenn jemand auf Fertig drückt" value="ready" @click="gameEnd"></v-radio>
-                    <v-radio label="Wenn der Countdown endet" value="countdown" @click="gameEnd"></v-radio>
-                  </v-radio-group>
-                  <v-subheader>Countdown in Sekunden</v-subheader>
-                  <v-slider step="10" min="30" max="300" thumb-label prepend-icon="mdi-clock-outline" v-model="countdown_slider" :disabled="behavior != 'countdown' || !isOwner" @end="gameEnd" :hint="countdown_slider + 's'" :persistent-hint="behavior == 'countdown'"></v-slider>
-                </v-form>
-              </v-col>
-            </v-row>
-          </v-card-text>
-          <v-card-actions v-if="users.filter(user => {return user.room == $route.params.id}).length > 0">
-            <v-btn v-if="isOwner" color="green" block large @click="startGame" :loading="isPending"><v-icon>mdi-play</v-icon>&ensp;Spiel starten</v-btn>
-            <v-btn v-else color="green" block large disabled><v-icon>mdi-play</v-icon>&ensp;Der Owner muss das Spiel starten</v-btn>
-          </v-card-actions>
-        </v-card>
-        <v-card v-if="gameStatusC == 'timer'">
+  <div>
+    <SocialHeader title="Stadt Land Fluss" description="Stadt Land Fluss" />
+    <v-row justify="center" align="center">
+      <v-col cols="12" sm="12" md="12">
+        <v-btn color="red" v-if="this.$store.state.name" @click="leave('Du hast das Spiel verlassen')" icon large><v-icon>mdi-exit-to-app</v-icon></v-btn>
+        <v-btn color="green" v-if="this.$store.state.name && isOwner" @click="copyInvite" :disabled="!isOwner" class="ml-5"><v-icon>mdi-share</v-icon>&ensp;Invite</v-btn>
+        <v-card v-if="!this.$store.state.name">
           <v-card-title>
             Stadt Land Fluss
           </v-card-title>
           <v-card-text>
-            <v-avatar v-for="(user, i) in users.filter(user => {return user.room == $route.params.id})" :key="i" color="primary" size="36" class="noselect uppercase avatar mr-1 mb-10">{{ user.username.substring(0,3) }}</v-avatar>
-            <div class="text-center">
-              <v-progress-circular color="primary" :value="countdown_pg" rotate="270" size="124">{{ countdown }}</v-progress-circular>
-            </div>
-          </v-card-text>
-        </v-card>
-        <v-card :loading="cdIndicator" v-show="gameStatusC == 'think'">
-          <v-card-title>
-            Stadt Land Fluss - Überlegen
-          </v-card-title>
-          <v-card-text>
-            <v-avatar v-for="(user, i) in users.filter(user => {return user.room == $route.params.id})" :key="i" color="primary" size="36" class="noselect uppercase avatar mr-1 mb-10">{{ user.username.substring(0,3) }}</v-avatar>
-            <h2 class="mb-4">Buchstabe: <span class="text-uppercase">{{letter}}</span></h2>
-            <v-form ref="thinkform" @submit.prevent="sendAnswers">
-              <v-text-field :label="field" v-for="(field, i) in categories" :key="i" :disabled="submitted"></v-text-field>
-              <v-btn color="primary" @click="submitAnswers" :disabled="submitted" block x-large>Fertig</v-btn>
-            </v-form>
-            <div v-if="finish || behavior == 'countdown'" class="text-center mt-5">
-              <v-progress-circular :color="countdown <= 5 ? 'red' : 'primary'" :value="countdown_pg" rotate="270" size="124">{{ countdown }}</v-progress-circular>
-            </div>
-          </v-card-text>
-        </v-card>
-        <v-card v-if="gameStatusC == 'evaluation'">
-          <v-card-title>
-            Stadt Land Fluss - Auswertung
-          </v-card-title>
-          <v-card-text>
-            <v-avatar v-for="(user, i) in users.filter(user => {return user.room == $route.params.id})" :key="i" color="primary" size="36" class="noselect uppercase avatar mr-1 mb-10">{{ user.username.substring(0,3) }}</v-avatar>
-            <v-form ref="evalform">
-              <v-simple-table>
-                <template v-slot:default>
-                  <thead>
-                    <tr>
-                      <th>
-                        User
-                      </th>
-                      <th v-for="(head, i) in categories" :key="i">
-                        {{ head }}
-                      </th>
-                      <th class="text-center">
-                        Punkte
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(item, i) in player_res" :key="i">
-                      <td>
-                        {{ item.username }}<span class="ml-1 grey--text font-italic font-weight-light" v-if="item.id == socket.id">Du</span>
-                      </td>
-                      <td v-for="(res, j) in item.answers" :key="j">
-                        <v-checkbox color="green" :disabled="res == null" :value="false" @change="changeEvaluation(j + categories.length * i)">
-                          <template v-slot:prepend><p class="mt-1 text-no-wrap">{{res}}</p></template>
-                          <template v-slot:label>{{eval_tab[j + categories.length * i]}}</template>
-                        </v-checkbox>
-                      </td>
-                      <td class="body-1 grey--text text-center">
-                        {{ points[i] }}
-                      </td>
-                    </tr>
-                  </tbody>
-                </template>
-              </v-simple-table>
+            <v-form @submit.prevent="login">
+              <v-text-field label="Username" v-model="username" ref="loginfield"></v-text-field>
             </v-form>
           </v-card-text>
           <v-card-actions>
-            <v-btn v-if="isOwner" color="primary" block large @click="reset" :loading="isPending"><v-icon>mdi-arrow-left</v-icon>&ensp;Zurück zur Lobby</v-btn>
-            <v-btn v-else color="primary" block large disabled><v-icon>mdi-arrow-left</v-icon>&ensp;Der Owner muss zurück zur Lobby</v-btn>
+            <v-btn color="green" block large @click="login" :disabled="!username"><v-icon>mdi-play</v-icon>&ensp;Spiel beitreten</v-btn>
           </v-card-actions>
         </v-card>
-      </div>
-    </v-col>
-  </v-row>
+        <div v-else>
+          <br />
+          <v-card v-if="gameStatusC == 'pre'">
+            <v-card-title>
+              Stadt Land Fluss - Pre-Game
+            </v-card-title>
+            <v-card-text v-if="!users.filter(user => {return user.room == $route.params.id}).length > 0" class="text-center">
+              <v-progress-circular indeterminate color="yellow darken-3" size="124">Connecting...</v-progress-circular>
+            </v-card-text>
+            <v-card-text v-else>
+              <v-row>
+                <v-col>
+                  <v-alert type="warning" color="orange" border="left" icon="mdi-alert-circle-outline" transition="fade-transition" :value="gameRunning && !inGame">
+                    Es findet gerade ein Spiel statt. Du bist in der nächsten Runde dabei.
+                  </v-alert>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="6" sm="12" md="6">
+                  <v-list dense>
+                    <v-subheader>
+                      Users
+                    </v-subheader>
+                    <v-slide-y-transition group tag="div">
+                      <v-list-item v-for="(user, i) in users.filter(user => {return user.room == $route.params.id})" :key="i">
+                        <v-list-item-action>
+                          <v-tooltip bottom>
+                            <template v-slot:activator="{ on, attrs }">
+                              <div class="noselect uppercase avatar">
+                                <v-avatar color="primary" size="40" v-bind="attrs" v-on="on">{{ user.username.substring(0,3) }}</v-avatar>
+                              </div>
+                            </template>
+                            <span>{{ user.username }}</span>
+                          </v-tooltip>
+                        </v-list-item-action>
+                        <v-list-item-title>
+                          {{ user.username }}<span v-if="user.owner" class="ml-2"><v-icon color="yellow darken-3" size="18">mdi-crown</v-icon></span><span class="ml-1 grey--text font-italic font-weight-light" v-if="user.id == socket.id">Du</span>
+                        </v-list-item-title>
+                        <v-list-item-action v-if="isOwner">
+                          <v-btn color="red" icon @click="kickUser(user.id)" :disabled="user.id == socket.id"><v-icon>mdi-account-remove</v-icon></v-btn>
+                        </v-list-item-action>
+                      </v-list-item>
+                    </v-slide-y-transition>
+                  </v-list>
+                </v-col>
+                <v-col cols="6" sm="12" md="6">
+                  <v-list dense>
+                    <v-subheader>
+                      Kategorien
+                    </v-subheader>
+                    <v-slide-y-transition group tag="div">
+                      <v-list-item v-for="(item, i) in categories" :key="i">
+                        <v-list-item-action>
+                          <v-avatar color="primary" size="32" class="noselect uppercase avatar">#{{i + 1}}</v-avatar>
+                        </v-list-item-action>
+                        <v-list-item-title>
+                          {{item}}
+                        </v-list-item-title>
+                        <v-list-item-action v-if="isOwner">
+                          <v-btn color="red" icon @click="deleteCategory(i)"><v-icon>mdi-delete</v-icon></v-btn>
+                        </v-list-item-action>
+                      </v-list-item>
+                    </v-slide-y-transition>
+                  </v-list>
+                  <v-form @submit.prevent="addCategory" ref="categoriesForm" v-if="isOwner">
+                    <v-text-field label="Kategorie hinzufügen" append-outer-icon="mdi-plus" @click:append-outer="addCategory" ref="addCategory"></v-text-field>
+                  </v-form>
+                  <v-form>
+                    <v-subheader>Die Denkphase wird beendet</v-subheader>
+                    <v-radio-group row v-model="behavior" :disabled="!isOwner">
+                      <v-radio label="Wenn jemand auf Fertig drückt" value="ready" @click="gameEnd"></v-radio>
+                      <v-radio label="Wenn der Countdown endet" value="countdown" @click="gameEnd"></v-radio>
+                    </v-radio-group>
+                    <v-subheader>Countdown in Sekunden</v-subheader>
+                    <v-slider step="10" min="30" max="300" thumb-label prepend-icon="mdi-clock-outline" v-model="countdown_slider" :disabled="behavior != 'countdown' || !isOwner" @end="gameEnd" :hint="countdown_slider + 's'" :persistent-hint="behavior == 'countdown'"></v-slider>
+                  </v-form>
+                </v-col>
+              </v-row>
+            </v-card-text>
+            <v-card-actions v-if="users.filter(user => {return user.room == $route.params.id}).length > 0">
+              <v-btn v-if="isOwner" color="green" block large @click="startGame" :loading="isPending"><v-icon>mdi-play</v-icon>&ensp;Spiel starten</v-btn>
+              <v-btn v-else color="green" block large disabled><v-icon>mdi-play</v-icon>&ensp;Der Owner muss das Spiel starten</v-btn>
+            </v-card-actions>
+          </v-card>
+          <v-card v-if="gameStatusC == 'timer'">
+            <v-card-title>
+              Stadt Land Fluss
+            </v-card-title>
+            <v-card-text>
+              <v-avatar v-for="(user, i) in users.filter(user => {return user.room == $route.params.id})" :key="i" color="primary" size="36" class="noselect uppercase avatar mr-1 mb-10">{{ user.username.substring(0,3) }}</v-avatar>
+              <div class="text-center">
+                <v-progress-circular color="primary" :value="countdown_pg" rotate="270" size="124">{{ countdown }}</v-progress-circular>
+              </div>
+            </v-card-text>
+          </v-card>
+          <v-card :loading="cdIndicator" v-show="gameStatusC == 'think'">
+            <v-card-title>
+              Stadt Land Fluss - Überlegen
+            </v-card-title>
+            <v-card-text>
+              <v-avatar v-for="(user, i) in users.filter(user => {return user.room == $route.params.id})" :key="i" color="primary" size="36" class="noselect uppercase avatar mr-1 mb-10">{{ user.username.substring(0,3) }}</v-avatar>
+              <h2 class="mb-4">Buchstabe: <span class="text-uppercase">{{letter}}</span></h2>
+              <v-form ref="thinkform" @submit.prevent="sendAnswers">
+                <v-text-field :label="field" v-for="(field, i) in categories" :key="i" :disabled="submitted"></v-text-field>
+                <v-btn color="primary" @click="submitAnswers" :disabled="submitted" block x-large>Fertig</v-btn>
+              </v-form>
+              <div v-if="finish || behavior == 'countdown'" class="text-center mt-5">
+                <v-progress-circular :color="countdown <= 5 ? 'red' : 'primary'" :value="countdown_pg" rotate="270" size="124">{{ countdown }}</v-progress-circular>
+              </div>
+            </v-card-text>
+          </v-card>
+          <v-card v-if="gameStatusC == 'evaluation'">
+            <v-card-title>
+              Stadt Land Fluss - Auswertung
+            </v-card-title>
+            <v-card-text>
+              <v-avatar v-for="(user, i) in users.filter(user => {return user.room == $route.params.id})" :key="i" color="primary" size="36" class="noselect uppercase avatar mr-1 mb-10">{{ user.username.substring(0,3) }}</v-avatar>
+              <v-form ref="evalform">
+                <v-simple-table>
+                  <template v-slot:default>
+                    <thead>
+                      <tr>
+                        <th>
+                          User
+                        </th>
+                        <th v-for="(head, i) in categories" :key="i">
+                          {{ head }}
+                        </th>
+                        <th class="text-center">
+                          Punkte
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(item, i) in player_res" :key="i">
+                        <td>
+                          {{ item.username }}<span class="ml-1 grey--text font-italic font-weight-light" v-if="item.id == socket.id">Du</span>
+                        </td>
+                        <td v-for="(res, j) in item.answers" :key="j">
+                          <v-checkbox color="green" :disabled="res == null" :value="false" @change="changeEvaluation(j + categories.length * i)">
+                            <template v-slot:prepend><p class="mt-1 text-no-wrap">{{res}}</p></template>
+                            <template v-slot:label>{{eval_tab[j + categories.length * i]}}</template>
+                          </v-checkbox>
+                        </td>
+                        <td class="body-1 grey--text text-center">
+                          {{ points[i] }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </template>
+                </v-simple-table>
+              </v-form>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn v-if="isOwner" color="primary" block large @click="reset" :loading="isPending"><v-icon>mdi-arrow-left</v-icon>&ensp;Zurück zur Lobby</v-btn>
+              <v-btn v-else color="primary" block large disabled><v-icon>mdi-arrow-left</v-icon>&ensp;Der Owner muss zurück zur Lobby</v-btn>
+            </v-card-actions>
+          </v-card>
+        </div>
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script>
@@ -214,8 +217,6 @@ export default {
   }),
 
   mounted() {
-    this.$store.commit('CHANGE_TITLE', 'Stadt Land Fluss')
-    this.$store.commit('CHANGE_DESCRIPTION', 'Stadt Land Fluss')
     this.connectToSocket()
     this.loginAlready()
     this.listen()
