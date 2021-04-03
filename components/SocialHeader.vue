@@ -95,14 +95,6 @@ export default {
           property: 'og:image:alt',
           content: this.title
         }
-      ],
-
-      link: [
-        {
-          hid: 'canonical',
-          rel: 'canonical',
-          href: 'https://slf.mc-mineserver.de' + this.path
-        }
       ]
     }
   }
