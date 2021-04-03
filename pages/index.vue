@@ -11,7 +11,7 @@
             <h1 class="mb-5">Stadt Land Fluss</h1>
             <p>
               Hier können du und deine Freunde zusammen <span class="font-weight-bold">Stadt Land Fluss</span> spielen.<br class="mb-2" />
-              Ihr braucht einen Discord ??? Schau doch mal <a href="https://mc-mineserver.de/discord-server/" target="_blank" ref="noopener noreferrer" class="grey--text">hier</a> vorbei.
+              Ihr braucht einen Discord ??? Schau doch mal <a href="https://mc-mineserver.de/discord-server/" target="_blank" rel="noopener noreferrer" class="grey--text">hier</a> vorbei.
             </p>
             <h1 class="mb-5">Features:</h1>
             <ul class="mb-3">
@@ -25,7 +25,7 @@
             </p>
             <p>
               Schon gewusst ???<br class="mb-2" />
-              <v-btn small class="pl-3 pr-3" href="https://github.com/DerLev/NUXT.JS-SLF" target="_blank" ref="noopener noreferrer"><v-icon>mdi-github</v-icon>&ensp;Ich bin Open-Source</v-btn>
+              <v-btn small class="pl-3 pr-3" href="https://github.com/DerLev/NUXT.JS-SLF" target="_blank" rel="noopener noreferrer"><v-icon>mdi-github</v-icon>&ensp;Ich bin Open-Source</v-btn>
             </p>
           </v-card-text>
           <v-card-actions>

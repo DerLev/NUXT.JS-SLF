@@ -31,6 +31,11 @@ export default {
     return {
       meta: [
         {
+          hid: 'description',
+          name: 'description',
+          content: this.description
+        },
+        {
           hid: 'twitter:type',
           name: 'twitter:type',
           content: 'summary'
