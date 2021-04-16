@@ -10,8 +10,8 @@ export default {
     title: 'Ein Stadt Land Fluss Spiel erstellen'
   },
 
-  created() {
-    this.$router.push('/g/' + rs.generate({ length: 12, charset: 'alphanumeric' }) + '/')
+  fetch({ redirect }) {
+    redirect('/g/' + rs.generate({ length: 12, charset: 'alphanumeric' }) + '/')
   }
 }
 </script>

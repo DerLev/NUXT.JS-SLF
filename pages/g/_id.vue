@@ -3,9 +3,9 @@
     <SocialHeader title="Stadt Land Fluss" description="Stadt Land Fluss" />
     <v-row justify="center" align="center">
       <v-col cols="12" sm="12" md="12">
-        <v-btn color="red" v-if="this.$store.state.name" @click="leave('Du hast das Spiel verlassen')" icon large><v-icon>mdi-exit-to-app</v-icon></v-btn>
-        <v-btn color="green" v-if="this.$store.state.name && isOwner" @click="copyInvite" :disabled="!isOwner" class="ml-5"><v-icon>mdi-share</v-icon>&ensp;Invite</v-btn>
-        <v-card v-if="!this.$store.state.name">
+        <v-btn color="red" v-if="loggedIn" @click="leave('Du hast das Spiel verlassen')" icon large><v-icon>mdi-exit-to-app</v-icon></v-btn>
+        <v-btn color="green" v-if="loggedIn && isOwner" @click="copyInvite" :disabled="!isOwner" class="ml-5"><v-icon>mdi-share</v-icon>&ensp;Invite</v-btn>
+        <v-card v-if="!loggedIn">
           <v-card-title>
             Stadt Land Fluss
           </v-card-title>
@@ -194,7 +194,7 @@ export default {
 
   data:() => ({
     username: '',
-    socket: io('https://api.mc-mineserver.de/slf'),
+    socket: io('http://localhost:7999/slf'),
     users: [],
     categories: ['Stadt', 'Land', 'Fluss'],
     isOwner: false,
@@ -214,6 +214,7 @@ export default {
     isPending: false,
     behavior: 'ready',
     countdown_slider: 120,
+    loggedIn: false,
   }),
 
   mounted() {
@@ -383,11 +384,12 @@ export default {
       })
       console.log('[%cCOOKIE%c] set username cookie to ' + this.username, 'color:#e50;', 'color:#000')
       this.socket.emit('login', {username: this.$store.state.name, room: this.$route.params.id})
+      this.loggedIn = true
     },
 
     loginAlready() {
       if(this.$store.state.name) {
-        this.socket.emit('login', {username: this.$store.state.name, room: this.$route.params.id})
+        this.username = this.$store.state.name
       }
     },
 
