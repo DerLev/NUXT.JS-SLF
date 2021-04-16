@@ -194,7 +194,7 @@ export default {
 
   data:() => ({
     username: '',
-    socket: io('http://localhost:7999/slf'),
+    socket: io('https://api.mc-mineserver.de/slf'),
     users: [],
     categories: ['Stadt', 'Land', 'Fluss'],
     isOwner: false,
