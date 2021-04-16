@@ -8,8 +8,8 @@ export default {
     title: 'Einladung zu Stadt Land Fluss'
   },
 
-  fetch({ redirect }) {
-    redirect('/g/' + this.$route.params.id + '/')
+  fetch({ redirect, params }) {
+    redirect('/g/' + params.id + '/')
   }
 }
 </script>
