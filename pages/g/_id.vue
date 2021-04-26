@@ -5,20 +5,7 @@
       <v-col cols="12" sm="12" md="12">
         <v-btn color="red" v-if="loggedIn" @click="leave('Du hast das Spiel verlassen')" icon large><v-icon>mdi-exit-to-app</v-icon></v-btn>
         <v-btn color="green" v-if="loggedIn && isOwner" @click="copyInvite" :disabled="!isOwner" class="ml-5"><v-icon>mdi-share</v-icon>&ensp;Invite</v-btn>
-        <v-card v-if="!loggedIn">
-          <v-card-title>
-            Stadt Land Fluss
-          </v-card-title>
-          <v-card-text>
-            <v-form @submit.prevent="login">
-              <v-text-field label="Username" v-model="username" ref="loginfield"></v-text-field>
-            </v-form>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn color="green" block large @click="login" :disabled="!username"><v-icon>mdi-play</v-icon>&ensp;Spiel beitreten</v-btn>
-          </v-card-actions>
-        </v-card>
-        <div v-else>
+        <div v-if="loggedIn">
           <br />
           <v-card v-if="gameStatusC == 'pre'">
             <v-card-title>

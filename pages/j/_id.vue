@@ -8,8 +8,12 @@ export default {
     title: 'Einladung zu Stadt Land Fluss'
   },
 
-  fetch({ redirect, params }) {
-    redirect('/g/' + params.id + '/')
+  fetch({ redirect, params, $auth }) {
+    if($auth.loggedIn) {
+      redirect('/g/' + params.id + '/')
+    } else {
+      redirect('/auth/login?message=login_needed')
+    }
   }
 }
 </script>

@@ -10,8 +10,12 @@ export default {
     title: 'Ein Stadt Land Fluss Spiel erstellen'
   },
 
-  fetch({ redirect }) {
-    redirect('/g/' + rs.generate({ length: 12, charset: 'alphanumeric' }) + '/')
+  fetch({ redirect, $auth }) {
+    if($auth.loggedIn) {
+      redirect('/g/' + rs.generate({ length: 12, charset: 'alphanumeric' }) + '/')
+    } else {
+      redirect('/auth/login?message=login_needed')
+    }
   }
 }
 </script>

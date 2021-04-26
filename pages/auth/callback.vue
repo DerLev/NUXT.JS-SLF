@@ -11,7 +11,7 @@
             {{ $route.query.error_description }}
           </v-card-text>
           <v-card-actions>
-            <v-btn to="/"><v-icon>mdi-home</v-icon>&ensp;Home</v-btn>
+            <v-btn to="/" color="white" block text><v-icon>mdi-home</v-icon>&ensp;Home</v-btn>
           </v-card-actions>
         </v-card>
       </v-col>

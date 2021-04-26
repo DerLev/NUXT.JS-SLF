@@ -43,8 +43,12 @@ export default {
         this.$router.push('/')
         this.$notification.showMessage({content: "Spiel kann nicht gefunden werden", color: "red"})
       } else {
-        this.$router.push('/g/' + id + '/')
-        this.$notification.showMessage({content: "Spiel beigetreten", color: "primary"})
+        if(this.$auth.loggedIn) {
+          this.$router.push('/g/' + id + '/')
+          this.$notification.showMessage({content: "Spiel beigetreten", color: "primary"})
+        } else {
+          this.$router.push('/auth/login?message=login_needed')
+        }
       }
     }
   }
