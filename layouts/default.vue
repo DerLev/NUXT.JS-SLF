@@ -5,7 +5,14 @@
       <v-spacer></v-spacer>
       <div v-if="$route.name != 'g-id'">
         <v-btn color="#7289DA" @click="$auth.loginWith('discord')" v-if="!$auth.loggedIn && $route.name != 'auth-login'"><v-icon>mdi-discord</v-icon>&ensp;Mit Discord einloggen</v-btn>
-        <v-btn color="#7289DA" @click="$auth.logout()" v-if="$auth.loggedIn"><v-icon>mdi-exit-to-app</v-icon>&ensp;{{$auth.user.username}} ausloggen</v-btn>
+        <v-btn color="#7289DA" @click="$auth.logout()" v-if="$auth.loggedIn">
+          <!-- <v-icon>mdi-exit-to-app</v-icon>&ensp; -->
+          <v-avatar size="32">
+            <img :src="'https://cdn.discordapp.com/avatars/' + $auth.user.id + '/' + $auth.user.avatar + '.png?size=64'" :alt="$auth.user.username" v-if="$auth.user.avatar != null">
+            <img :src="'https://cdn.discordapp.com/embed/avatars/' + $auth.user.discriminator % 5 + '.png'" :alt="$auth.user.username" v-else>
+          </v-avatar>&nbsp;
+          {{$auth.user.username}}<small>#{{$auth.user.discriminator}}</small>&ensp;ausloggen
+        </v-btn>
       </div>
     </v-app-bar>
     <v-main>

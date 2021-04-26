@@ -34,14 +34,17 @@
                           <v-tooltip bottom>
                             <template v-slot:activator="{ on, attrs }">
                               <div class="noselect uppercase avatar">
-                                <v-avatar color="primary" size="40" v-bind="attrs" v-on="on">{{ user.username.substring(0,3) }}</v-avatar>
+                                <v-avatar size="40" v-bind="attrs" v-on="on">
+                                  <img :src="'https://cdn.discordapp.com/avatars/' + user.uid + '/' + user.avatar + '.png?size=128'" :alt="user.username" v-if="user.avatar != null">
+                                  <img :src="'https://cdn.discordapp.com/embed/avatars/' + user.discriminator % 5 + '.png'" :alt="user.username" v-else>
+                                </v-avatar>
                               </div>
                             </template>
-                            <span>{{ user.username }}</span>
+                            <span>{{ user.username }}#{{user.discriminator}}</span>
                           </v-tooltip>
                         </v-list-item-action>
                         <v-list-item-title>
-                          {{ user.username }}<span v-if="user.owner" class="ml-2"><v-icon color="yellow darken-3" size="18">mdi-crown</v-icon></span><span class="ml-1 grey--text font-italic font-weight-light" v-if="user.id == socket.id">Du</span>
+                          {{ user.username }}<small>#{{ user.discriminator }}</small><span v-if="user.owner" class="ml-2"><v-icon color="yellow darken-3" size="18">mdi-crown</v-icon></span><span class="ml-1 grey--text font-italic font-weight-light" v-if="user.id == socket.id">Du</span>
                         </v-list-item-title>
                         <v-list-item-action v-if="isOwner">
                           <v-btn color="red" icon @click="kickUser(user.id)" :disabled="user.id == socket.id"><v-icon>mdi-account-remove</v-icon></v-btn>
@@ -94,7 +97,10 @@
               Stadt Land Fluss
             </v-card-title>
             <v-card-text>
-              <v-avatar v-for="(user, i) in users.filter(user => {return user.room == $route.params.id})" :key="i" color="primary" size="36" class="noselect uppercase avatar mr-1 mb-10">{{ user.username.substring(0,3) }}</v-avatar>
+              <v-avatar v-for="(user, i) in users.filter(user => {return user.room == $route.params.id})" :key="i" size="36" class="noselect uppercase avatar mr-1 mb-10">
+                <img :src="'https://cdn.discordapp.com/avatars/' + user.uid + '/' + user.avatar + '.png?size=128'" :alt="user.username" v-if="user.avatar != null">
+                <img :src="'https://cdn.discordapp.com/embed/avatars/' + user.discriminator % 5 + '.png'" :alt="user.username" v-else>
+              </v-avatar>
               <div class="text-center">
                 <v-progress-circular color="primary" :value="countdown_pg" rotate="270" size="124">{{ countdown }}</v-progress-circular>
               </div>
@@ -105,7 +111,10 @@
               Stadt Land Fluss - Überlegen
             </v-card-title>
             <v-card-text>
-              <v-avatar v-for="(user, i) in users.filter(user => {return user.room == $route.params.id})" :key="i" color="primary" size="36" class="noselect uppercase avatar mr-1 mb-10">{{ user.username.substring(0,3) }}</v-avatar>
+              <v-avatar v-for="(user, i) in users.filter(user => {return user.room == $route.params.id})" :key="i" size="36" class="noselect uppercase avatar mr-1 mb-10">
+                <img :src="'https://cdn.discordapp.com/avatars/' + user.uid + '/' + user.avatar + '.png?size=128'" :alt="user.username" v-if="user.avatar != null">
+                <img :src="'https://cdn.discordapp.com/embed/avatars/' + user.discriminator % 5 + '.png'" :alt="user.username" v-else>
+              </v-avatar>
               <h2 class="mb-4">Buchstabe: <span class="text-uppercase">{{letter}}</span></h2>
               <v-form ref="thinkform" @submit.prevent="sendAnswers">
                 <v-text-field :label="field" v-for="(field, i) in categories" :key="i" :disabled="submitted"></v-text-field>
@@ -121,7 +130,10 @@
               Stadt Land Fluss - Auswertung
             </v-card-title>
             <v-card-text>
-              <v-avatar v-for="(user, i) in users.filter(user => {return user.room == $route.params.id})" :key="i" color="primary" size="36" class="noselect uppercase avatar mr-1 mb-10">{{ user.username.substring(0,3) }}</v-avatar>
+              <v-avatar v-for="(user, i) in users.filter(user => {return user.room == $route.params.id})" :key="i" size="36" class="noselect uppercase avatar mr-1 mb-10">
+                <img :src="'https://cdn.discordapp.com/avatars/' + user.uid + '/' + user.avatar + '.png?size=128'" :alt="user.username" v-if="user.avatar != null">
+                <img :src="'https://cdn.discordapp.com/embed/avatars/' + user.discriminator % 5 + '.png'" :alt="user.username" v-else>
+              </v-avatar>
               <v-form ref="evalform">
                 <v-simple-table>
                   <template v-slot:default>
@@ -141,7 +153,10 @@
                     <tbody>
                       <tr v-for="(item, i) in player_res" :key="i">
                         <td>
-                          {{ item.username }}<span class="ml-1 grey--text font-italic font-weight-light" v-if="item.id == socket.id">Du</span>
+                          <v-avatar size="36" class="noselect uppercase avatar mr-1">
+                            <img :src="'https://cdn.discordapp.com/avatars/' + item.uid + '/' + item.avatar + '.png?size=128'" :alt="item.username" v-if="item.avatar != null">
+                            <img :src="'https://cdn.discordapp.com/embed/avatars/' + item.discriminator % 5 + '.png'" :alt="item.username" v-else>
+                          </v-avatar>&nbsp;{{ item.username }}<small>#{{ item.discriminator }}</small><span class="ml-1 grey--text font-italic font-weight-light" v-if="item.id == socket.id">Du</span>
                         </td>
                         <td v-for="(res, j) in item.answers" :key="j">
                           <v-checkbox color="green" :disabled="res == null" :value="false" @change="changeEvaluation(j + categories.length * i)">
@@ -364,7 +379,7 @@ export default {
     },
 
     login() {
-      this.socket.emit('login', {username: this.username, room: this.$route.params.id})
+      this.socket.emit('login', {username: this.$auth.user.username, room: this.$route.params.id, uid: this.$auth.user.id, avatar: this.$auth.user.avatar, discriminator: this.$auth.user.discriminator})
       this.loggedIn = true
     },
 
