@@ -153,10 +153,11 @@
                     <tbody>
                       <tr v-for="(item, i) in player_res" :key="i">
                         <td>
-                          <v-avatar size="36" class="noselect uppercase avatar mr-1">
+                          <v-avatar size="34" class="noselect uppercase avatar mr-1">
                             <img :src="'https://cdn.discordapp.com/avatars/' + item.uid + '/' + item.avatar + '.png?size=128'" :alt="item.username" v-if="item.avatar != null">
                             <img :src="'https://cdn.discordapp.com/embed/avatars/' + item.discriminator % 5 + '.png'" :alt="item.username" v-else>
-                          </v-avatar>&nbsp;{{ item.username }}<small>#{{ item.discriminator }}</small><span class="ml-1 grey--text font-italic font-weight-light" v-if="item.id == socket.id">Du</span>
+                          </v-avatar>&nbsp;
+                          {{ item.username }}<small>#{{ item.discriminator }}</small><span class="ml-1 grey--text font-italic font-weight-light" v-if="item.id == socket.id">Du</span>
                         </td>
                         <td v-for="(res, j) in item.answers" :key="j">
                           <v-checkbox color="green" :disabled="res == null" :value="false" @change="changeEvaluation(j + categories.length * i)">
