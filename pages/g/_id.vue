@@ -382,10 +382,10 @@ export default {
     },
 
     loginAlready() {
-      if(this.$auth.loggedIn) {
+      if(this.$auth.loggedIn == true) {
         this.username = this.$auth.user.username + '#' + this.$auth.user.discriminator
+        this.login()
       }
-      this.login()
     },
 
     syncCategories() {
