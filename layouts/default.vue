@@ -3,8 +3,10 @@
     <v-app-bar :clipped-left="clipped" fixed app>
       <v-toolbar-title v-text="title" @click="$router.push('/')" style="cursor:pointer;" />
       <v-spacer></v-spacer>
-      <v-btn color="#7289DA" @click="$auth.loginWith('discord')" v-if="!$auth.loggedIn && $route.name != 'auth-login'"><v-icon>mdi-discord</v-icon>&ensp;Login with Discord</v-btn>
-      <v-btn color="#7289DA" @click="$auth.logout()" v-if="$auth.loggedIn"><v-icon>mdi-exit-to-app</v-icon>&ensp;Log {{$auth.user.username}} out</v-btn>
+      <div v-if="$route.name != 'g-id'">
+        <v-btn color="#7289DA" @click="$auth.loginWith('discord')" v-if="!$auth.loggedIn && $route.name != 'auth-login'"><v-icon>mdi-discord</v-icon>&ensp;Mit Discord einloggen</v-btn>
+        <v-btn color="#7289DA" @click="$auth.logout()" v-if="$auth.loggedIn"><v-icon>mdi-exit-to-app</v-icon>&ensp;{{$auth.user.username}} ausloggen</v-btn>
+      </div>
     </v-app-bar>
     <v-main>
       <v-container>
