@@ -88,10 +88,7 @@ export default {
       callback: '/auth/callback',
       home: '/'
     },
-    cookie: false,
-    localStorage: {
-      prefix: 'slf_auth.'
-    }
+    cookie: false
   },
 
   sitemap: {
