@@ -5,9 +5,7 @@
       <v-col cols="12" sm="12" md="12">
         <v-card>
           <v-card-text>
-            <div v-if="$route.query.message != 'login_needed'">
-              <v-btn color="primary" small to="/"><v-icon>mdi-arrow-left</v-icon>&ensp;Zurück</v-btn><br /><br />
-            </div>
+            <h1 class="text-center mb-4 white--text">Login</h1>
             <v-alert type="warning" color="orange" border="left" icon="mdi-alert-outline" v-if="$route.query.message == 'login_needed'">
               Du musst dich anmelden um zu spielen
             </v-alert>
