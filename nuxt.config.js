@@ -47,6 +47,7 @@ export default {
     'nuxt-clipboard2',
     ['cookie-universal-nuxt', {alias: 'cookie'}],
     '@nuxtjs/sitemap',
+    '@nuxtjs/auth-next',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -71,6 +72,24 @@ export default {
     }
   },
 
+  auth: {
+    strategies: {
+      discord: {
+        clientId: '836202253731758082',
+        clientSecret: 'q-CQdjAybK8EXzd4Wp0MSFGw9XEILk1C',
+        codeChallengeMethod: 'S256',
+        grantType: 'authorization_code',
+        scope: 'identify',
+      },
+    },
+    redirect: {
+      login: '/auth/login/',
+      logout: '/',
+      callback: '/auth/callback',
+      home: '/'
+    }
+  },
+
   sitemap: {
     hostname: 'https://slf.mc-mineserver.de',
     gzip: true,
@@ -78,6 +97,7 @@ export default {
     exclude: [
       '/g/*/',
       '/j/*/',
+      '/auth/callback/',
     ],
     defaults: {
       changefreq: 'monthly',

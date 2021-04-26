@@ -3,7 +3,8 @@
     <v-app-bar :clipped-left="clipped" fixed app>
       <v-toolbar-title v-text="title" @click="$router.push('/')" style="cursor:pointer;" />
       <v-spacer></v-spacer>
-      <v-btn v-if="this.$store.state.name" text color="white" @click="logout">{{ this.$store.state.name }}&ensp;<v-icon>mdi-logout</v-icon></v-btn>
+      <v-btn color="#7289DA" @click="$auth.loginWith('discord')" v-if="!$auth.loggedIn && $route.name != 'auth-login'"><v-icon>mdi-discord</v-icon>&ensp;Login with Discord</v-btn>
+      <v-btn color="#7289DA" @click="$auth.logout()" v-if="$auth.loggedIn"><v-icon>mdi-exit-to-app</v-icon>&ensp;Log {{$auth.user.username}} out</v-btn>
     </v-app-bar>
     <v-main>
       <v-container>
@@ -38,22 +39,5 @@ export default {
       title: 'Stadt Land Fluss'
     }
   },
-
-  mounted() {
-    this.$store.commit('CHANGE_NAME', this.$cookie.get('username'))
-    console.log('[%cCOOKIE%c] read username from cookie: ' + this.$cookie.get('username'), 'color:#e50;', 'color:#000')
-  },
-
-  methods: {
-    logout() {
-      this.$router.push('/')
-      this.$cookie.remove('username', {
-        sameSite: true,
-        maxAge: 60 * 60 * 24 * 365,
-      })
-      this.$store.commit('CHANGE_NAME', undefined)
-      console.log('[%cCOOKIE%c] remove username cookie', 'color:#e50;', 'color:#000')
-    }
-  }
 }
 </script>

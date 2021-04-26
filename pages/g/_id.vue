@@ -377,20 +377,15 @@ export default {
     },
 
     login() {
-      this.$store.commit('CHANGE_NAME', this.username)
-      this.$cookie.set('username', this.username, {
-        sameSite: true,
-        maxAge: 60 * 60 * 24 * 365,
-      })
-      console.log('[%cCOOKIE%c] set username cookie to ' + this.username, 'color:#e50;', 'color:#000')
-      this.socket.emit('login', {username: this.$store.state.name, room: this.$route.params.id})
+      this.socket.emit('login', {username: this.username, room: this.$route.params.id})
       this.loggedIn = true
     },
 
     loginAlready() {
-      if(this.$store.state.name) {
-        this.username = this.$store.state.name
+      if(this.$auth.loggedIn) {
+        this.username = this.$auth.user.username + '#' + this.$auth.user.discriminator
       }
+      this.login()
     },
 
     syncCategories() {
