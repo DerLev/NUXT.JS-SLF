@@ -80,6 +80,12 @@ export default {
         codeChallengeMethod: 'S256',
         grantType: 'authorization_code',
         scope: 'identify',
+        token: {
+          maxAge: 60 * 60 * 24 * 7
+        },
+        refreshToken: {
+          maxAge: 60 * 60 * 24 * 60
+        },
       },
     },
     redirect: {
