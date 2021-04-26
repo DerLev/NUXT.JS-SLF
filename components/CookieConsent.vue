@@ -7,7 +7,7 @@
       <v-card-text>
         <p>
           Wir benutzen hier Cookies nur um diese Meldung zu steuern<br />
-          und deinen ausgewählten Nutzernamen zu speichern
+          und deinen Discord-Login zu speichern.
         </p>
       </v-card-text>
       <v-card-actions>
