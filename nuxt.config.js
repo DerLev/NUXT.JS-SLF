@@ -88,7 +88,12 @@ export default {
       callback: '/auth/callback',
       home: '/'
     },
-    cookie: false
+    cookie: {
+      options: {
+        maxAge: 60 * 60 * 24 * 365 * 10,
+        secure: true,
+      }
+    }
   },
 
   sitemap: {
