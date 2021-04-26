@@ -48,5 +48,9 @@ export default {
       title: 'Stadt Land Fluss'
     }
   },
+
+  mounted() {
+    this.$auth.refreshTokens()
+  }
 }
 </script>
