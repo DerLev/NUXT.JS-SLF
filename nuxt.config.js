@@ -87,6 +87,10 @@ export default {
       logout: '/',
       callback: '/auth/callback',
       home: '/'
+    },
+    cookie: false,
+    localStorage: {
+      prefix: 'slf_auth.'
     }
   },
 
