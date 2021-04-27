@@ -225,11 +225,6 @@ export default {
     this.connectToSocket()
     this.loginAlready()
     this.listen()
-    try {
-      this.$refs.loginfield.focus()
-    } catch(err) {
-      console.error(err)
-    }
     this.isMounted = true
   },
 
