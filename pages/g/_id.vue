@@ -221,6 +221,7 @@ export default {
   }),
 
   mounted() {
+    this.$auth.refreshTokens()
     this.connectToSocket()
     this.loginAlready()
     this.listen()

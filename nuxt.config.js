@@ -75,6 +75,12 @@ export default {
   auth: {
     strategies: {
       discord: {
+        scheme: 'oauth2',
+        endpoints: {
+          authorization: 'https://discord.com/api/oauth2/authorize',
+          token: 'https://discord.com/api/oauth2/token',
+          userInfo: 'https://discord.com/api/users/@me'
+        },
         clientId: '836202253731758082',
         clientSecret: 'q-CQdjAybK8EXzd4Wp0MSFGw9XEILk1C',
         codeChallengeMethod: 'S256',
