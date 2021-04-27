@@ -160,7 +160,7 @@
                           {{ item.username }}<small>#{{ item.discriminator }}</small><span class="ml-1 grey--text font-italic font-weight-light" v-if="item.id == socket.id">Du</span>
                         </td>
                         <td v-for="(res, j) in item.answers" :key="j">
-                          <v-checkbox color="green" :disabled="res == null" :value="false" @change="changeEvaluation(j + categories.length * i)">
+                          <v-checkbox color="green" :disabled="res == '' || res == null" :value="false" @change="changeEvaluation(j + categories.length * i)">
                             <template v-slot:prepend><p class="mt-1 text-no-wrap">{{res}}</p></template>
                             <template v-slot:label>{{eval_tab[j + categories.length * i]}}</template>
                           </v-checkbox>

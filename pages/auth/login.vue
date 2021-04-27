@@ -9,7 +9,7 @@
             <v-alert type="warning" color="orange" border="left" icon="mdi-alert-outline" v-if="$route.query.message == 'login_needed'">
               Du musst dich anmelden um zu spielen
             </v-alert>
-            <v-btn color="#7289DA" block large @click="$auth.loginWith('discord')"><v-icon>mdi-discord</v-icon>&ensp;Mit Discord anmelden</v-btn>
+            <v-btn color="#7289DA" block large @click="$auth.loginWith('discord', { params: { prompt: 'none' } })"><v-icon>mdi-discord</v-icon>&ensp;Mit Discord anmelden</v-btn>
           </v-card-text>
         </v-card>
       </v-col>
