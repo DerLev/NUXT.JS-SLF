@@ -4,7 +4,7 @@
       <v-toolbar-title v-text="title" @click="$router.push('/')" style="cursor:pointer;" />
       <v-spacer></v-spacer>
       <div v-if="$route.name != 'g-id'">
-        <v-btn color="#7289DA" @click="$auth.loginWith('discord', { params: { prompt: 'none' } })" v-if="!$auth.loggedIn && $route.name != 'auth-login'"><v-icon>mdi-discord</v-icon>&ensp;Mit Discord einloggen</v-btn>
+        <v-btn color="#7289DA" @click="$auth.loginWith('discord')" v-if="!$auth.loggedIn && $route.name != 'auth-login'"><v-icon>mdi-discord</v-icon>&ensp;Mit Discord einloggen</v-btn>
         <v-btn color="#7289DA" @click="$auth.logout()" v-if="$auth.loggedIn">
           <!-- <v-icon>mdi-exit-to-app</v-icon>&ensp; -->
           <v-avatar size="32">
