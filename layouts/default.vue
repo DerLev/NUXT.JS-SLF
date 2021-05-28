@@ -25,7 +25,7 @@
     <v-footer :absolute="!fixed" app>
       <span>&copy; {{ new Date().getFullYear() }} McMineserver</span>
       <v-spacer></v-spacer>
-      <span><v-btn small text href="https://github.com/DerLev/NUXT.JS-SLF" target="_blank" rel="noopener noreferrer"><v-icon>mdi-github</v-icon>&ensp;GitHub</v-btn></span>
+      <span><v-btn small text :href="'https://github.com/DerLev/NUXT.JS-SLF/commit/' + git" target="_blank" rel="noopener noreferrer"><v-icon>mdi-git</v-icon>&nbsp;{{git}}</v-btn></span>
     </v-footer>
   </v-app>
 </template>
@@ -45,7 +45,8 @@ export default {
         },
       ],
       miniVariant: false,
-      title: 'Stadt Land Fluss'
+      title: 'Stadt Land Fluss',
+      git: process.env.NUXT_ENV_CURRENT_GIT_SHA,
     }
   },
 }
