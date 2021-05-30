@@ -27,11 +27,9 @@
               Schon gewusst ???<br class="mb-2" />
               <v-btn small class="pl-3 pr-3" href="https://github.com/DerLev/NUXT.JS-SLF" target="_blank" rel="noopener noreferrer"><v-icon>mdi-github</v-icon>&ensp;Ich bin Open-Source</v-btn>
             </p>
+            <v-btn color="primary" large to="/j/" class="pl-10 pr-10 mb-2" block><v-icon>mdi-link</v-icon>&ensp;Trete einem Spiel bei</v-btn>
+            <v-btn color="green" large @click="startNew" class="pl-10 pr-10" block><v-icon>mdi-play</v-icon>&ensp;Starte ein Spiel</v-btn>
           </v-card-text>
-          <v-card-actions>
-            <v-btn color="primary" large to="/j/" class="mr-5 pl-10 pr-10"><v-icon>mdi-link</v-icon>&ensp;Trete einem Spiel bei</v-btn>
-            <v-btn color="green" large @click="startNew" class="pl-10 pr-10"><v-icon>mdi-play</v-icon>&ensp;Starte ein Spiel</v-btn>
-          </v-card-actions>
         </v-card>
       </v-col>
     </v-row>

@@ -23,7 +23,7 @@
                 </v-col>
               </v-row>
               <v-row>
-                <v-col cols="6" sm="12" md="6">
+                <v-col cols="12" sm="12" md="6">
                   <v-list dense>
                     <v-subheader>
                       Users
@@ -53,7 +53,7 @@
                     </v-slide-y-transition>
                   </v-list>
                 </v-col>
-                <v-col cols="6" sm="12" md="6">
+                <v-col cols="12" sm="12" md="6">
                   <v-list dense>
                     <v-subheader>
                       Kategorien
