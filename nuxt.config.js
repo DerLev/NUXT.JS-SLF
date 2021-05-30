@@ -38,6 +38,7 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
+    '@nuxtjs/pwa',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -120,6 +121,29 @@ export default {
     defaults: {
       changefreq: 'monthly',
       lastmod: new Date()
+    }
+  },
+
+  pwa: {
+    meta: {
+      author: false,
+      description: false,
+      theme_color: '#272727',
+      lang: false,
+      ogType: false,
+      ogSiteName: false,
+      ogTitle: false,
+      ogDescription: false,
+      ogImage: false,
+      ogUrl: false,
+    },
+    manifest: {
+      name: 'Stadt Land Fluss',
+      short_name: 'SLF',
+      description: 'Spiele Stadt Land Fluss',
+      lang: 'de',
+      display: 'standalone',
+      theme_color: '#272727',
     }
   },
 
