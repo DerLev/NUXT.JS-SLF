@@ -144,6 +144,9 @@ export default {
       lang: 'de',
       display: 'standalone',
       theme_color: '#272727',
+    },
+    workbox: {
+      offline: false,
     }
   },
 
