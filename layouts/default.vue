@@ -22,6 +22,13 @@
         <Snackbar />
         <CookieConsent />
         <nuxt />
+        <v-snackbar v-model="pwa" timeout="-1" right top>
+          Du kannst Stadt Land Fluss auf deinem Gerät installieren.<br />
+          Gehe nur auf Chrome und klick auf Installieren.
+          <template v-slot:action="">
+            <v-btn icon @click="pwadismissed"><v-icon>mdi-close</v-icon></v-btn>
+          </template>
+        </v-snackbar>
       </v-container>
     </v-main>
     <v-footer :absolute="!fixed" app>
@@ -49,7 +56,30 @@ export default {
       miniVariant: false,
       title: 'Stadt Land Fluss',
       git: process.env.NUXT_ENV_CURRENT_GIT_SHA,
+      pwa: false,
     }
   },
+
+  mounted() {
+    if(this.$cookie.get('pwa-dismissed') == true) {
+      this.pwa = false
+    } else {
+      if (window.matchMedia('(display-mode: standalone)').matches) {
+        this.pwa = false
+      } else {
+        this.pwa = true
+      }
+    }
+  },
+
+  methods: {
+    pwadismissed() {
+      this.$cookie.set('pwa-dismissed', true, {
+        sameSite: true,
+        maxAge: 60 * 60 * 24 * 365 * 10,
+      })
+      this.pwa = false
+    }
+  }
 }
 </script>
