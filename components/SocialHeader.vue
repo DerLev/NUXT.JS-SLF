@@ -17,7 +17,7 @@ export default {
     },
     image: {
       type: String,
-      default: 'https://api.mc-mineserver.de/v2/files/a89322ca79dcf62bf29ac3a7562205c3.png'
+      default: 'https://api.mc-mineserver.de/v3/files/a89322ca79dcf62bf29ac3a7562205c3.png'
     }
   },
 
