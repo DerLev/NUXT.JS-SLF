@@ -24,8 +24,8 @@ export default {
     ],
     link: [
       { rel: 'shortcut icon', sizes: '16x16 24x24 32x32 48x48 64x64', type: 'image/x-icon', href: '/favicon.ico' },
-      { rel: 'apple-touch-icon', sizes: '57x57', href: '/favicon/favicon-52.png' },
-      { rel: 'apple-touch-icon-precomposed', sizes: '57x57', href: '/favicon/favicon-52.png' },
+      { rel: 'apple-touch-icon', sizes: '57x57', href: '/favicon/favicon-57.png' },
+      { rel: 'apple-touch-icon-precomposed', sizes: '57x57', href: '/favicon/favicon-57.png' },
       { rel: 'apple-touch-icon', sizes: '72x72', href: '/favicon/favicon-72.png' },
       { rel: 'apple-touch-icon', sizes: '114x114', href: '/favicon/favicon-114.png' },
       { rel: 'apple-touch-icon', sizes: '120x120', href: '/favicon/favicon-120.png' },
