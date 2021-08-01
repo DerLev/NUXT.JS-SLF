@@ -1,5 +1,7 @@
 import colors from 'vuetify/es5/util/colors'
 
+const VersionFile = require('webpack-version-file')
+
 export default {
   server: {
     host: '0.0.0.0',
@@ -15,10 +17,20 @@ export default {
     },
     meta: [
       { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' }
+      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { name: 'application-name', content: 'McMineserver' },
+      { name: 'msapplication-TileImage', content: 'favicon/favicon-144.png' },
+      { name: 'msapplication-TileColor', content: '#121417' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'shortcut icon', sizes: '16x16 24x24 32x32 48x48 64x64', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'apple-touch-icon', sizes: '57x57', href: '/favicon/favicon-52.png' },
+      { rel: 'apple-touch-icon-precomposed', sizes: '57x57', href: '/favicon/favicon-52.png' },
+      { rel: 'apple-touch-icon', sizes: '72x72', href: '/favicon/favicon-72.png' },
+      { rel: 'apple-touch-icon', sizes: '114x114', href: '/favicon/favicon-114.png' },
+      { rel: 'apple-touch-icon', sizes: '120x120', href: '/favicon/favicon-120.png' },
+      { rel: 'apple-touch-icon', sizes: '144x144', href: '/favicon/favicon-144.png' },
+      { rel: 'apple-touch-icon', sizes: '152x152', href: '/favicon/favicon-152.png' }
     ]
   },
 
@@ -152,5 +164,11 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+    plugins: [
+      new VersionFile({
+        output: './static/version.txt',
+        package: './package.json'
+      })
+    ]
   }
 }
