@@ -91,3 +91,6 @@ sw.*
 
 
 version.txt
+
+docker-compose.yml
+Dockerfile
